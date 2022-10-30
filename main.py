@@ -13,6 +13,7 @@ class Post(BaseModel):
     published: Optional[bool] = True
     rating: Optional[int]
 
+
 # POST 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 def createPost(post: Post):
