@@ -7,16 +7,13 @@ app = FastAPI()
 
 allPost = []
 
-
 class Post(BaseModel):
     title: str
     content: str
     published: Optional[bool] = True
     rating: Optional[int]
 
-# POST
-
-
+# POST 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 def createPost(post: Post):
     id = random.randrange(0, 1000000)
