@@ -1,11 +1,13 @@
 from ast import While
 import random
 from typing import Optional
-from fastapi import FastAPI, status, HTTPException, Response
+from database import SessionLocal
+from fastapi import FastAPI, status, HTTPException, Response, Depends
 from pydantic import BaseModel
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
+from sqlalchemy.orm import Session 
 
 app = FastAPI()
 
@@ -14,7 +16,7 @@ allPost = []
 while True:
     try:
         conn = psycopg2.connect(database='postgres', user='postgres',
-                                password='password', host='localhost', cursor_factory=RealDictCursor)
+                                password='password', host='sql-postgres', cursor_factory=RealDictCursor)
         cur = conn.cursor()
         print("Database connected successfully.")
         break
@@ -23,6 +25,19 @@ while True:
         print("Error", error)
         time.sleep(2)
 
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.get("/sqlalchemy")
+def sqlAlchemy(db: Session = Depends(get_db)):
+    return {
+        "database": "connected",
+        "status": "OK"
+    }
 
 class Post(BaseModel):
     title: str

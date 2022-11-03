@@ -5,6 +5,28 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres 
-      - POSTGRES_PASSWORD=password 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
       - POSTGRES_DB=postgres
+    networks:
+      - net
+  python:
+    depends_on: 
+      - sql-postgres
+    image: python:3.9.15-alpine3.15
+    tty: true
+    stdin_open: true
+    volumes:
+      - "../fastAPI:/root"
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    networks:
+      - net
+networks:
+  net:
+    name: firework
+    external: true
